@@ -19,6 +19,7 @@ class EventsScreen extends ConsumerWidget {
     } else {
       return ListView.separated(
         itemCount: events.length,
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           return EventCard(event: events[index]);
         },

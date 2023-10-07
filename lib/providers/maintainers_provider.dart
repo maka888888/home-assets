@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_assets3/models/maintainer_model.dart';
 
@@ -25,6 +26,7 @@ class MaintainersProvider extends StateNotifier<List<MaintainerModel>?> {
           }
         }
       });
+      debugPrint("maintainers received: ${maintainers.length}");
     } catch (error) {
       print("Failed to get maintainers: $error");
     }

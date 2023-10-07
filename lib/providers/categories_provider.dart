@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_assets3/models/categories_model.dart';
 
@@ -24,9 +25,10 @@ class CategoriesProvider extends StateNotifier<List<CategoryModel>?> {
           }
         }
         state = categories;
+        debugPrint("categories received: ${categories.length}");
       });
     } catch (error) {
-      print("Failed to get categories: $error");
+      debugPrint("Failed to get categories: $error");
     }
   }
 

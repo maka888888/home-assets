@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_assets3/models/asset_model.dart';
 import 'package:home_assets3/models/event_model.dart';
 import 'package:home_assets3/providers/assets_provider.dart';
-import 'package:home_assets3/ui/events/event_edit.dart';
 import 'package:jiffy/jiffy.dart';
+
+import 'event_main.dart';
 
 class EventCard extends ConsumerWidget {
   final EventModel event;
@@ -32,7 +33,7 @@ class EventCard extends ConsumerWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => EventEditScreen(event: event),
+              builder: (context) => EventScreen(eventId: event.id!),
             ),
           );
         },

@@ -29,14 +29,18 @@ class EventModel {
 
   factory EventModel.fromFire(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    print(data['event']);
+
     return EventModel(
       id: document.id,
       date: DateTime.parse(data['date']),
       assetId: data['assetId'],
       event: data['event'],
-      durationInMinutes: data['durationInMinutes'],
+      durationInMinutes: data['durationInMinutes'] == null
+          ? null
+          : int.tryParse(data['durationInMinutes'].toString()) ?? 0,
       maintainerId: data['maintainerId'],
-      cost: data['cost'],
+      cost: double.tryParse(data['cost'].toString()) ?? 0,
       notes: data['notes'],
       createdAt: DateTime.parse(data['createdAt']),
       updatedAt: DateTime.parse(data['updatedAt']),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_assets3/models/producers_model.dart';
 
@@ -24,6 +25,7 @@ class ProducersProvider extends StateNotifier<List<ProducerModel>?> {
           state = [];
         }
       });
+      debugPrint("producers received: ${state!.length}");
     } catch (error) {
       print("Failed to get producers: $error");
     }

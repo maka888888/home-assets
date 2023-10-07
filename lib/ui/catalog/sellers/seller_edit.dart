@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/models/seller_model.dart';
 
 import '../../../providers/seller_provider.dart';
@@ -94,36 +95,45 @@ class SellerEditScreenState extends ConsumerState<SellerEditScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FormBuilder(
-            key: _formKey,
-            initialValue: {
-              'sellerName': seller.sellerName,
-            },
-            child: Column(
-              children: [
-                FormBuilderTextField(
-                  name: 'sellerName',
-                  decoration: const InputDecoration(
-                    labelText: 'Seller Name',
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.max(70),
-                  ]),
-                  onChanged: (value) {
-                    setState(() {
-                      seller.sellerName = value!;
-                    });
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: sizes.largeScreenSize,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: FormBuilder(
+                  key: _formKey,
+                  initialValue: {
+                    'sellerName': seller.sellerName,
                   },
+                  child: Column(
+                    children: [
+                      FormBuilderTextField(
+                        name: 'sellerName',
+                        decoration: const InputDecoration(
+                          labelText: 'Seller Name',
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.max(70),
+                        ]),
+                        onChanged: (value) {
+                          setState(() {
+                            seller.sellerName = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

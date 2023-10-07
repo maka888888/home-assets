@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/models/categories_model.dart';
 
 import '../../../providers/categories_provider.dart';
@@ -102,31 +103,43 @@ class CategoryEditScreenState extends ConsumerState<CategoryEditScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: FormBuilder(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                initialValue: _category.categoryName,
-                decoration: const InputDecoration(
-                  labelText: 'Category Name',
-                ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                  FormBuilderValidators.maxLength(70),
-                ]),
-                onChanged: (value) {
-                  setState(() {
-                    _category.categoryName = value;
-                  });
-                },
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: sizes.largeScreenSize,
               ),
-            ],
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: FormBuilder(
+                  key: _formKey,
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      TextFormField(
+                        initialValue: _category.categoryName,
+                        decoration: const InputDecoration(
+                          labelText: 'Category Name',
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.maxLength(70),
+                        ]),
+                        onChanged: (value) {
+                          setState(() {
+                            _category.categoryName = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

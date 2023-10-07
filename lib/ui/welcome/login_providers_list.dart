@@ -13,46 +13,21 @@ class LoginProvidersWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
-    // Widget divider() {
-    //   return Row(
-    //     children: [
-    //       const Expanded(
-    //         child: Divider(
-    //           color: Colors.white,
-    //           thickness: 1,
-    //         ),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-    //         child: Text(
-    //           AppLocalizations.of(context)!.or,
-    //           style: const TextStyle(color: Colors.white),
-    //         ),
-    //       ),
-    //       const Expanded(
-    //         child: Divider(
-    //           color: Colors.white,
-    //           thickness: 1,
-    //         ),
-    //       )
-    //     ],
-    //   );
+    String clientId =
+        '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
+
+    // if (isIOS) {
+    //   clientId =
+    //       '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
+    // } else {
+    //   clientId =
+    //       '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
     // }
-
-    String clientId;
-
-    if (isIOS) {
-      clientId =
-          '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
-    } else {
-      clientId =
-          '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
-    }
 
     return AuthStateListener<OAuthController>(
       listener: (oldState, newState, controller) {
         //print('AuthStateListener: $oldState -> $newState');
-        print('AuthStateListener: $newState');
+        //print('AuthStateListener: $newState');
 
         if (newState is AuthFailed) {
           debugPrint(newState.exception.toString());
@@ -104,9 +79,6 @@ class LoginProvidersWidget extends StatelessWidget {
                   provider: AppleProvider(),
                 )
               : const SizedBox(),
-          // OAuthProviderButton(
-          //   provider: FacebookProvider(clientId: '1662891074106575'),
-          // ),
         ],
       ),
     );

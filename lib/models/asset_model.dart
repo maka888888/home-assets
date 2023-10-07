@@ -39,6 +39,8 @@ class AssetModel {
 
   factory AssetModel.fromFire(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    print(data['name']);
+
     return AssetModel(
       id: document.id,
       name: data['name'],
@@ -54,7 +56,9 @@ class AssetModel {
       purchaseDate: data['purchaseDate'] == null
           ? null
           : DateTime.parse(data['purchaseDate']),
-      purchasePrice: data['purchasePrice'],
+      purchasePrice: data['purchasePrice'] == null
+          ? null
+          : double.tryParse(data['purchasePrice'].toString()) ?? 0,
       warrantyDueDate: data['warrantyDueDate'] == null
           ? null
           : DateTime.parse(data['warrantyDueDate']),

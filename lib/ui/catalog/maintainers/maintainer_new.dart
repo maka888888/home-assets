@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/models/maintainer_model.dart';
 
 import '../../../providers/maintainers_provider.dart';
@@ -72,62 +73,71 @@ class MaintainerNewScreenState extends ConsumerState<MaintainerNewScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FormBuilder(
-            key: _formKey,
-            child: Column(
-              children: [
-                FormBuilderTextField(
-                  name: 'maintainerName',
-                  decoration: const InputDecoration(
-                    labelText: 'Maintainer Name',
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: sizes.largeScreenSize,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: FormBuilder(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      FormBuilderTextField(
+                        name: 'maintainerName',
+                        decoration: const InputDecoration(
+                          labelText: 'Maintainer Name',
+                        ),
+                        initialValue: _maintainer.maintainerName,
+                        onChanged: (value) {
+                          setState(() {
+                            _maintainer.maintainerName = value!;
+                          });
+                        },
+                        textCapitalization: TextCapitalization.words,
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.min(5),
+                          FormBuilderValidators.max(70),
+                        ]),
+                      ),
+                      FormBuilderTextField(
+                        name: 'maintainerEmail',
+                        initialValue: _maintainer.maintainerEmail,
+                        decoration: const InputDecoration(
+                          labelText: 'Maintainer Email',
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _maintainer.maintainerEmail = value!;
+                          });
+                        },
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      FormBuilderTextField(
+                        name: 'maintainerPhone',
+                        initialValue: _maintainer.maintainerPhone,
+                        decoration: const InputDecoration(
+                          labelText: 'Maintainer Phone',
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _maintainer.maintainerPhone = value!;
+                          });
+                        },
+                        keyboardType: TextInputType.phone,
+                      ),
+                    ],
                   ),
-                  initialValue: _maintainer.maintainerName,
-                  onChanged: (value) {
-                    setState(() {
-                      _maintainer.maintainerName = value!;
-                    });
-                  },
-                  textCapitalization: TextCapitalization.words,
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.min(5),
-                    FormBuilderValidators.max(70),
-                  ]),
                 ),
-                FormBuilderTextField(
-                  name: 'maintainerEmail',
-                  initialValue: _maintainer.maintainerEmail,
-                  decoration: const InputDecoration(
-                    labelText: 'Maintainer Email',
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _maintainer.maintainerEmail = value!;
-                    });
-                  },
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                FormBuilderTextField(
-                  name: 'maintainerPhone',
-                  initialValue: _maintainer.maintainerPhone,
-                  decoration: const InputDecoration(
-                    labelText: 'Maintainer Phone',
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _maintainer.maintainerPhone = value!;
-                    });
-                  },
-                  keyboardType: TextInputType.phone,
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

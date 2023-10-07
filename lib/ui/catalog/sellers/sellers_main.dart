@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/ui/catalog/sellers/seller_card.dart';
 import 'package:home_assets3/ui/catalog/sellers/seller_new.dart';
 
@@ -15,15 +16,27 @@ class SellersScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Sellers'),
       ),
-      body: ListView.separated(
-        itemCount: sellers.length,
-        itemBuilder: (context, index) {
-          return SellerCard(seller: sellers[index]);
-        },
-        separatorBuilder: (context, index) {
-          return const Divider();
-        },
-      ),
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: sizes.largeScreenSize,
+              ),
+              child: ListView.separated(
+                itemCount: sellers.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return SellerCard(seller: sellers[index]);
+                },
+                separatorBuilder: (context, index) {
+                  return const Divider();
+                },
+              ),
+            ),
+          ),
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

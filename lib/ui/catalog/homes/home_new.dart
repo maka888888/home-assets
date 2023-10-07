@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/models/home_model.dart';
 
 import '../../../providers/homes_provider.dart';
@@ -69,99 +70,108 @@ class HomeNewScreenState extends ConsumerState<HomeNewScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FormBuilder(
-            key: _formKey,
-            child: Column(
-              children: [
-                FormBuilderTextField(
-                  name: 'homeName',
-                  decoration: const InputDecoration(
-                    labelText: 'Home Name',
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: sizes.largeScreenSize,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: FormBuilder(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      FormBuilderTextField(
+                        name: 'homeName',
+                        decoration: const InputDecoration(
+                          labelText: 'Home Name',
+                        ),
+                        initialValue: _home.homeName,
+                        onChanged: (value) {
+                          setState(() {
+                            _home.homeName = value!;
+                          });
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.maxLength(20),
+                          FormBuilderValidators.min(5),
+                        ]),
+                      ),
+                      FormBuilderTextField(
+                        name: 'street',
+                        decoration: const InputDecoration(
+                          labelText: 'Street',
+                        ),
+                        initialValue: _home.street,
+                        onChanged: (value) {
+                          setState(() {
+                            _home.street = value!;
+                          });
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.maxLength(70),
+                          FormBuilderValidators.min(5),
+                        ]),
+                      ),
+                      FormBuilderTextField(
+                        name: 'city',
+                        decoration: const InputDecoration(
+                          labelText: 'City',
+                        ),
+                        initialValue: _home.city,
+                        onChanged: (value) {
+                          setState(() {
+                            _home.city = value!;
+                          });
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.maxLength(70),
+                          FormBuilderValidators.min(5),
+                        ]),
+                      ),
+                      FormBuilderTextField(
+                        name: 'state',
+                        decoration: const InputDecoration(
+                          labelText: 'State',
+                        ),
+                        initialValue: _home.state,
+                        onChanged: (value) {
+                          setState(() {
+                            _home.state = value!;
+                          });
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.maxLength(70),
+                          FormBuilderValidators.min(5),
+                        ]),
+                      ),
+                      FormBuilderTextField(
+                        name: 'zip',
+                        decoration: const InputDecoration(
+                          labelText: 'Zip',
+                        ),
+                        initialValue: _home.zip,
+                        onChanged: (value) {
+                          setState(() {
+                            _home.zip = value!;
+                          });
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.maxLength(70),
+                          FormBuilderValidators.min(5),
+                        ]),
+                      ),
+                    ],
                   ),
-                  initialValue: _home.homeName,
-                  onChanged: (value) {
-                    setState(() {
-                      _home.homeName = value!;
-                    });
-                  },
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.maxLength(20),
-                    FormBuilderValidators.min(5),
-                  ]),
                 ),
-                FormBuilderTextField(
-                  name: 'street',
-                  decoration: const InputDecoration(
-                    labelText: 'Street',
-                  ),
-                  initialValue: _home.street,
-                  onChanged: (value) {
-                    setState(() {
-                      _home.street = value!;
-                    });
-                  },
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.maxLength(70),
-                    FormBuilderValidators.min(5),
-                  ]),
-                ),
-                FormBuilderTextField(
-                  name: 'city',
-                  decoration: const InputDecoration(
-                    labelText: 'City',
-                  ),
-                  initialValue: _home.city,
-                  onChanged: (value) {
-                    setState(() {
-                      _home.city = value!;
-                    });
-                  },
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.maxLength(70),
-                    FormBuilderValidators.min(5),
-                  ]),
-                ),
-                FormBuilderTextField(
-                  name: 'state',
-                  decoration: const InputDecoration(
-                    labelText: 'State',
-                  ),
-                  initialValue: _home.state,
-                  onChanged: (value) {
-                    setState(() {
-                      _home.state = value!;
-                    });
-                  },
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.maxLength(70),
-                    FormBuilderValidators.min(5),
-                  ]),
-                ),
-                FormBuilderTextField(
-                  name: 'zip',
-                  decoration: const InputDecoration(
-                    labelText: 'Zip',
-                  ),
-                  initialValue: _home.zip,
-                  onChanged: (value) {
-                    setState(() {
-                      _home.zip = value!;
-                    });
-                  },
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.maxLength(70),
-                    FormBuilderValidators.min(5),
-                  ]),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

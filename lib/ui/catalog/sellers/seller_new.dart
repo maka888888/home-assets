@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/models/seller_model.dart';
 
 import '../../../providers/seller_provider.dart';
@@ -63,29 +64,42 @@ class SellerNewScreenState extends ConsumerState<SellerNewScreen> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Seller Name'),
-                initialValue: seller.sellerName,
-                onChanged: (value) {
-                  setState(() {
-                    seller.sellerName = value;
-                  });
-                },
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                  FormBuilderValidators.max(70),
-                ]),
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: sizes.largeScreenSize,
               ),
-            ],
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Seller Name'),
+                        initialValue: seller.sellerName,
+                        onChanged: (value) {
+                          setState(() {
+                            seller.sellerName = value;
+                          });
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.max(70),
+                        ]),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

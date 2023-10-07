@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/models/asset_model.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -69,6 +70,7 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                     .then((value) {
                   Navigator.pop(context);
                   Navigator.pop(context);
+                  Navigator.pop(context);
                 });
               },
               child: const Text('DELETE'),
@@ -97,7 +99,7 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                     setState(() {
                       _isImageLoading = true;
                     });
-                    await uploadPicture(context, ImageSource.camera)
+                    await uploadAssetPicture(context, ImageSource.camera)
                         .then((value) {
                       if (value != null) {
                         setState(() {
@@ -114,7 +116,7 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                     setState(() {
                       _isImageLoading = true;
                     });
-                    await uploadPicture(context, ImageSource.gallery)
+                    await uploadAssetPicture(context, ImageSource.gallery)
                         .then((value) {
                       if (value != null) {
                         setState(() {
@@ -244,272 +246,285 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: FormBuilder(
-            key: _formKey,
-            child: Column(
-              children: [
-                FormBuilderTextField(
-                  name: 'name',
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                  ),
-                  initialValue: _asset.name,
-                  onChanged: (value) {
-                    _asset.name = value!;
-                  },
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.maxLength(70),
-                    FormBuilderValidators.min(5),
-                  ]),
-                ),
-                FormBuilderDropdown(
-                  name: 'categoryId',
-                  decoration: InputDecoration(
-                    labelText: 'Category',
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CategoryNewScreen(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.add),
-                    ),
-                  ),
-                  initialValue: _asset.categoryId,
-                  items: ref
-                      .watch(categoriesProvider)!
-                      .map((category) => DropdownMenuItem(
-                            value: category.id,
-                            child: Text(category.categoryName),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    _asset.categoryId = value!;
-                  },
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                  ]),
-                ),
-                FormBuilderDropdown(
-                  name: 'homeId',
-                  decoration: const InputDecoration(
-                    labelText: 'Home',
-                  ),
-                  initialValue: _asset.homeId,
-                  items: ref
-                      .read(homesProvider)!
-                      .map((home) => DropdownMenuItem(
-                            value: home.id,
-                            child: Text(home.homeName),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    _asset.homeId = value!;
-                  },
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                  ]),
-                ),
-                FormBuilderDropdown(
-                  name: 'producerId',
-                  decoration: InputDecoration(
-                    labelText: 'Asset Producer',
-                    suffixIcon: SizedBox(
-                      width: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
+        child: Center(
+          child: LayoutBuilder(builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: sizes.largeScreenSize,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: FormBuilder(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      FormBuilderTextField(
+                        name: 'name',
+                        decoration: const InputDecoration(
+                          labelText: 'Name',
+                        ),
+                        initialValue: _asset.name,
+                        onChanged: (value) {
+                          _asset.name = value!;
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.maxLength(70),
+                          FormBuilderValidators.min(5),
+                        ]),
+                      ),
+                      FormBuilderDropdown(
+                        name: 'categoryId',
+                        decoration: InputDecoration(
+                          labelText: 'Category',
+                          suffixIcon: IconButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const ProducerNewScreen(),
+                                      const CategoryNewScreen(),
                                 ),
                               );
                             },
                             icon: const Icon(Icons.add),
                           ),
-                          IconButton(
-                            onPressed: () {
-                              _formKey.currentState!.fields['producerId']!
-                                  .reset();
-                              _formKey.currentState!.fields['producerId']!
-                                  .didChange(null);
-                              setState(() {
-                                _asset.producerId = null;
-                              });
-                            },
-                            icon: const Icon(Icons.close),
-                          ),
-                        ],
+                        ),
+                        initialValue: _asset.categoryId,
+                        items: ref
+                            .watch(categoriesProvider)!
+                            .map((category) => DropdownMenuItem(
+                                  value: category.id,
+                                  child: Text(category.categoryName),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          _asset.categoryId = value!;
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                        ]),
                       ),
-                    ),
-                  ),
-                  initialValue: _asset.producerId,
-                  items: ref
-                      .watch(producersProvider)!
-                      .map((producer) => DropdownMenuItem(
-                            value: producer.id,
-                            child: Text(producer.producerName),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    _asset.producerId = value.toString();
-                  },
-                ),
-                FormBuilderTextField(
-                  name: 'model',
-                  decoration: const InputDecoration(
-                    labelText: 'Model',
-                  ),
-                  initialValue: _asset.model,
-                  onChanged: (value) {
-                    _asset.model = value;
-                  },
-                ),
-                FormBuilderTextField(
-                  name: 'serialNumber',
-                  decoration: const InputDecoration(
-                    labelText: 'Serial Number',
-                  ),
-                  initialValue: _asset.serialNumber,
-                  onChanged: (value) {
-                    _asset.serialNumber = value;
-                  },
-                ),
-                FormBuilderDropdown(
-                  name: 'maintainerId',
-                  decoration: InputDecoration(
-                    labelText: 'Asset Maintainer',
-                    suffixIcon: SizedBox(
-                      width: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MaintainerNewScreen(),
+                      FormBuilderDropdown(
+                        name: 'homeId',
+                        decoration: const InputDecoration(
+                          labelText: 'Home',
+                        ),
+                        initialValue: _asset.homeId,
+                        items: ref
+                            .read(homesProvider)!
+                            .map((home) => DropdownMenuItem(
+                                  value: home.id,
+                                  child: Text(home.homeName),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          _asset.homeId = value!;
+                        },
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                        ]),
+                      ),
+                      FormBuilderDropdown(
+                        name: 'producerId',
+                        decoration: InputDecoration(
+                          labelText: 'Asset Producer',
+                          suffixIcon: SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ProducerNewScreen(),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.add),
                                 ),
-                              );
-                            },
-                            icon: const Icon(Icons.add),
+                                IconButton(
+                                  onPressed: () {
+                                    _formKey.currentState!.fields['producerId']!
+                                        .reset();
+                                    _formKey.currentState!.fields['producerId']!
+                                        .didChange(null);
+                                    setState(() {
+                                      _asset.producerId = null;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
+                            ),
                           ),
-                          IconButton(
+                        ),
+                        initialValue: _asset.producerId,
+                        items: ref
+                            .watch(producersProvider)!
+                            .map((producer) => DropdownMenuItem(
+                                  value: producer.id,
+                                  child: Text(producer.producerName),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          _asset.producerId = value.toString();
+                        },
+                      ),
+                      FormBuilderTextField(
+                        name: 'model',
+                        decoration: const InputDecoration(
+                          labelText: 'Model',
+                        ),
+                        initialValue: _asset.model,
+                        onChanged: (value) {
+                          _asset.model = value;
+                        },
+                      ),
+                      FormBuilderTextField(
+                        name: 'serialNumber',
+                        decoration: const InputDecoration(
+                          labelText: 'Serial Number',
+                        ),
+                        initialValue: _asset.serialNumber,
+                        onChanged: (value) {
+                          _asset.serialNumber = value;
+                        },
+                      ),
+                      FormBuilderDropdown(
+                        name: 'maintainerId',
+                        decoration: InputDecoration(
+                          labelText: 'Asset Maintainer',
+                          suffixIcon: SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MaintainerNewScreen(),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    _formKey
+                                        .currentState!.fields['maintainerId']!
+                                        .reset();
+                                    _formKey
+                                        .currentState!.fields['maintainerId']!
+                                        .didChange(null);
+                                    setState(() {
+                                      _asset.maintainerId = null;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        initialValue: _asset.maintainerId,
+                        items: ref
+                            .watch(maintainersProvider)!
+                            .map((maintainer) => DropdownMenuItem(
+                                  value: maintainer.id,
+                                  child: Text(maintainer.maintainerName),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          _asset.maintainerId = value.toString();
+                        },
+                      ),
+                      FormBuilderDateTimePicker(
+                        name: 'purchaseDate',
+                        decoration: InputDecoration(
+                          labelText: 'Purchase Date',
+                          suffixIcon: IconButton(
                             onPressed: () {
-                              _formKey.currentState!.fields['maintainerId']!
-                                  .reset();
-                              _formKey.currentState!.fields['maintainerId']!
-                                  .didChange(null);
                               setState(() {
-                                _asset.maintainerId = null;
+                                _asset.purchaseDate = null;
+                                _formKey.currentState!.fields['purchaseDate']!
+                                    .didChange(null);
                               });
                             },
                             icon: const Icon(Icons.close),
                           ),
-                        ],
+                        ),
+                        initialValue: _asset.purchaseDate,
+                        onChanged: (value) {
+                          _asset.purchaseDate = value!;
+                        },
                       ),
-                    ),
+                      FormBuilderTextField(
+                        name: 'purchasePrice',
+                        decoration: const InputDecoration(
+                          labelText: 'Purchase Price',
+                        ),
+                        initialValue: _asset.purchasePrice.toString(),
+                        onChanged: (value) {
+                          _asset.purchasePrice = double.parse(value!);
+                        },
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.numeric(),
+                        ]),
+                      ),
+                      FormBuilderDateTimePicker(
+                        name: 'warrantyDueDate',
+                        decoration: InputDecoration(
+                          labelText: 'Warranty Due Date',
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _asset.warrantyDueDate = null;
+                                _formKey
+                                    .currentState!.fields['warrantyDueDate']!
+                                    .didChange(null);
+                              });
+                            },
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
+                        initialValue: _asset.warrantyDueDate,
+                        onChanged: (value) {
+                          _asset.warrantyDueDate = value!;
+                        },
+                      ),
+                      FormBuilderTextField(
+                        name: 'notes',
+                        decoration: const InputDecoration(
+                          labelText: 'Notes',
+                        ),
+                        initialValue: _asset.notes,
+                        onChanged: (value) {
+                          _asset.notes = value;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      _photoWidget(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
                   ),
-                  initialValue: _asset.maintainerId,
-                  items: ref
-                      .watch(maintainersProvider)!
-                      .map((maintainer) => DropdownMenuItem(
-                            value: maintainer.id,
-                            child: Text(maintainer.maintainerName),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    _asset.maintainerId = value.toString();
-                  },
                 ),
-                FormBuilderDateTimePicker(
-                  name: 'purchaseDate',
-                  decoration: InputDecoration(
-                    labelText: 'Purchase Date',
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _asset.purchaseDate = null;
-                          _formKey.currentState!.fields['purchaseDate']!
-                              .didChange(null);
-                        });
-                      },
-                      icon: const Icon(Icons.close),
-                    ),
-                  ),
-                  initialValue: _asset.purchaseDate,
-                  onChanged: (value) {
-                    _asset.purchaseDate = value!;
-                  },
-                ),
-                FormBuilderTextField(
-                  name: 'purchasePrice',
-                  decoration: const InputDecoration(
-                    labelText: 'Purchase Price',
-                  ),
-                  initialValue: _asset.purchasePrice.toString(),
-                  onChanged: (value) {
-                    _asset.purchasePrice = double.parse(value!);
-                  },
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.numeric(),
-                  ]),
-                ),
-                FormBuilderDateTimePicker(
-                  name: 'warrantyDueDate',
-                  decoration: InputDecoration(
-                    labelText: 'Warranty Due Date',
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _asset.warrantyDueDate = null;
-                          _formKey.currentState!.fields['warrantyDueDate']!
-                              .didChange(null);
-                        });
-                      },
-                      icon: const Icon(Icons.close),
-                    ),
-                  ),
-                  initialValue: _asset.warrantyDueDate,
-                  onChanged: (value) {
-                    _asset.warrantyDueDate = value!;
-                  },
-                ),
-                FormBuilderTextField(
-                  name: 'notes',
-                  decoration: const InputDecoration(
-                    labelText: 'Notes',
-                  ),
-                  initialValue: _asset.notes,
-                  onChanged: (value) {
-                    _asset.notes = value;
-                  },
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                _photoWidget(),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          }),
         ),
       ),
     );

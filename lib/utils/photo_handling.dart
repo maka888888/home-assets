@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
-Future<String?> uploadPicture(BuildContext context, ImageSource source) async {
+Future<String?> uploadAssetPicture(
+    BuildContext context, ImageSource source) async {
   var uuid = const Uuid();
   String fileName = uuid.v1();
   final ImagePicker picker = ImagePicker();
@@ -22,14 +23,22 @@ Future<String?> uploadPicture(BuildContext context, ImageSource source) async {
   if (image == null) {
     return null;
   } else {
-    await FirebaseStorage.instance.ref('pictures/$fileName.jpg').putData(
-        await image.readAsBytes(), SettableMetadata(contentType: 'image/jpg'));
+    try {
+      await FirebaseStorage.instance.ref('assets/$fileName.jpg').putData(
+            await image.readAsBytes(),
+            SettableMetadata(contentType: 'image/jpg'),
+          );
+      //print('Uploaded picture: $fileName.jpg');
 
-    String url = await FirebaseStorage.instance
-        .ref('pictures/$fileName.jpg')
-        .getDownloadURL();
+      String url = await FirebaseStorage.instance
+          .ref('assets/$fileName.jpg')
+          .getDownloadURL();
 
-    return url;
+      //print('Download URL: $url');
+      return url;
+    } catch (e) {
+      print(e);
+    }
   }
 }
 

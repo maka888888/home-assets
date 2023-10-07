@@ -24,6 +24,7 @@ class SellersProvider extends StateNotifier<List<SellerModel>?> {
           state = [];
         }
       });
+      print("sellers received: ${state!.length}");
     } catch (error) {
       print("Failed to get sellers: $error");
     }

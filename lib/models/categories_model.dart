@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CategoryModel {
   String id;
   String categoryName;
+  int? numberOfAssets;
   DateTime createdAt;
   DateTime updatedAt;
   String uid;
@@ -10,6 +11,7 @@ class CategoryModel {
   CategoryModel({
     required this.id,
     required this.categoryName,
+    this.numberOfAssets,
     required this.createdAt,
     required this.updatedAt,
     required this.uid,

@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:home_assets3/theme.dart';
 import 'package:home_assets3/ui/loading/loading_main.dart';
+import 'package:home_assets3/ui/welcome/privacy_policy.dart';
 import 'package:home_assets3/ui/welcome/welcome_main.dart';
 
 import 'firebase_options.dart';
@@ -21,11 +23,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        title: 'Home Assets',
+        theme: homeAssetsThemeLight,
+        darkTheme: homeAssetsThemeDark,
+        routes: {
+          '/privacy': (context) => const PrivacyPolicyScreen(),
+        },
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {

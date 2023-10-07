@@ -4,7 +4,7 @@ import 'package:home_assets3/models/asset_model.dart';
 import 'package:home_assets3/models/categories_model.dart';
 import 'package:home_assets3/providers/categories_provider.dart';
 
-import 'asset_edit.dart';
+import 'asset_main.dart';
 
 class AssetCard extends ConsumerWidget {
   final AssetModel asset;
@@ -34,7 +34,7 @@ class AssetCard extends ConsumerWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AssetEditScreen(asset: asset),
+                builder: (context) => AssetScreen(assetId: asset.id!),
               ),
             );
           },

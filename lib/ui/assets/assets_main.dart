@@ -18,6 +18,7 @@ class AssetsScreen extends ConsumerWidget {
     } else {
       return ListView.separated(
         itemCount: assets.length,
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           return AssetCard(asset: assets[index]);
         },

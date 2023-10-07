@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/models/producers_model.dart';
 
 import '../../../providers/producer_provider.dart';
@@ -103,34 +104,43 @@ class ProducerEditScreenState extends ConsumerState<ProducerEditScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              children: [
-                TextFormField(
-                  initialValue: _producer.producerName,
-                  decoration: const InputDecoration(
-                    labelText: 'Producer Name',
+      body: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: sizes.largeScreenSize,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        initialValue: _producer.producerName,
+                        decoration: const InputDecoration(
+                          labelText: 'Producer Name',
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.max(70),
+                        ]),
+                        onChanged: (value) {
+                          setState(() {
+                            _producer.producerName = value;
+                          });
+                        },
+                      ),
+                    ],
                   ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.max(70),
-                  ]),
-                  onChanged: (value) {
-                    setState(() {
-                      _producer.producerName = value;
-                    });
-                  },
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

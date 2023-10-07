@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_assets3/models/asset_model.dart';
 import 'package:home_assets3/models/home_model.dart';
 
+import 'events_provider.dart';
+
 class AssetsProvider extends StateNotifier<List<AssetModel>?> {
-  AssetsProvider() : super(null);
+  final Ref ref;
+  AssetsProvider(this.ref) : super(null);
 
   CollectionReference fireAssets =
       FirebaseFirestore.instance.collection('assets');
@@ -22,9 +26,10 @@ class AssetsProvider extends StateNotifier<List<AssetModel>?> {
           }
         }
         state = assets;
+        debugPrint("assets received: ${assets.length}");
       });
     } catch (error) {
-      print("Failed to get assets: $error");
+      debugPrint("Failed to get assets: $error");
     }
   }
 
@@ -39,7 +44,7 @@ class AssetsProvider extends StateNotifier<List<AssetModel>?> {
         state = newAssets;
       });
     } catch (error) {
-      print("Failed to add asset: $error");
+      debugPrint("Failed to add asset: $error");
     }
   }
 
@@ -49,16 +54,17 @@ class AssetsProvider extends StateNotifier<List<AssetModel>?> {
       await fireAssets.doc(asset.id).update(asset.toJson());
       state = state!.map((e) => e.id == asset.id ? asset : e).toList();
     } catch (error) {
-      print("Failed to update asset: $error");
+      debugPrint("Failed to update asset: $error");
     }
   }
 
   Future deleteAsset(AssetModel asset) async {
     try {
+      await ref.read(eventsProvider.notifier).deleteEventsByAssetId(asset.id);
       await fireAssets.doc(asset.id).delete();
       state = state!.where((element) => element.id != asset.id).toList();
     } catch (error) {
-      print("Failed to delete asset: $error");
+      debugPrint("Failed to delete asset: $error");
     }
   }
 
@@ -75,7 +81,7 @@ class AssetsProvider extends StateNotifier<List<AssetModel>?> {
       });
       state = [];
     } catch (error) {
-      print("Failed to delete all assets: $error");
+      debugPrint("Failed to delete all assets: $error");
     }
   }
 
@@ -88,10 +94,10 @@ class AssetsProvider extends StateNotifier<List<AssetModel>?> {
       });
       state = [];
     } catch (error) {
-      print("Failed to delete all assets: $error");
+      debugPrint("Failed to delete all assets: $error");
     }
   }
 }
 
 final assetsProvider = StateNotifierProvider<AssetsProvider, List<AssetModel>?>(
-    (ref) => AssetsProvider());
+    (ref) => AssetsProvider(ref));
