@@ -45,7 +45,7 @@ class ProducerNewScreenState extends ConsumerState<ProducerNewScreen> {
       setState(() {
         _isSaving = false;
       });
-      Navigator.pop(context);
+      Navigator.pop(context, value.id);
     });
   }
 

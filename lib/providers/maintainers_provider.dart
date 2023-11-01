@@ -34,19 +34,20 @@ class MaintainersProvider extends StateNotifier<List<MaintainerModel>?> {
     state = maintainers;
   }
 
-  Future createMaintainer(MaintainerModel maintainer) async {
+  Future<MaintainerModel> createMaintainer(MaintainerModel maintainer) async {
+    maintainer.createdAt = DateTime.now();
+    maintainer.updatedAt = DateTime.now();
+    maintainer.uid = user.uid;
+
     try {
-      await fireMaintainers.add(maintainer.toJson()).then((value) {
-        maintainer.id = value.id;
-        maintainer.createdAt = DateTime.now();
-        maintainer.updatedAt = DateTime.now();
-        maintainer.uid = user.uid;
-        List<MaintainerModel> newMaintainers = List.from(state!)
-          ..add(maintainer);
-        state = newMaintainers;
-      });
+      DocumentReference docRef = await fireMaintainers.add(maintainer.toJson());
+      maintainer.id = docRef.id;
+
+      List<MaintainerModel> newMaintainers = List.from(state!)..add(maintainer);
+      state = newMaintainers;
+      return maintainer;
     } catch (error) {
-      print("Failed to add maintainer: $error");
+      throw Exception('Failed to create maintainer: $error');
     }
   }
 

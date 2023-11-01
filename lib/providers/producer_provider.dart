@@ -31,18 +31,18 @@ class ProducersProvider extends StateNotifier<List<ProducerModel>?> {
     }
   }
 
-  Future createProducer(ProducerModel producer) async {
+  Future<ProducerModel> createProducer(ProducerModel producer) async {
+    producer.createdAt = DateTime.now();
+    producer.updatedAt = DateTime.now();
+    producer.uid = user.uid;
     try {
-      await fireProducers.add(producer.toJson()).then((value) {
-        producer.id = value.id;
-        producer.createdAt = DateTime.now();
-        producer.updatedAt = DateTime.now();
-        producer.uid = user.uid;
-        List<ProducerModel> newProducers = List.from(state!)..add(producer);
-        state = newProducers;
-      });
+      DocumentReference docRef = await fireProducers.add(producer.toJson());
+      producer.id = docRef.id;
+      List<ProducerModel> newProducers = List.from(state!)..add(producer);
+      state = newProducers;
+      return producer;
     } catch (error) {
-      print("Failed to add producer: $error");
+      throw Exception("Failed to add producer: $error");
     }
   }
 

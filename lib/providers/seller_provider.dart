@@ -30,18 +30,19 @@ class SellersProvider extends StateNotifier<List<SellerModel>?> {
     }
   }
 
-  Future createSeller(SellerModel seller) async {
+  Future<SellerModel> createSeller(SellerModel seller) async {
+    seller.createdAt = DateTime.now();
+    seller.updatedAt = DateTime.now();
+    seller.uid = user.uid;
+
     try {
-      await fireSellers.add(seller.toJson()).then((value) {
-        seller.id = value.id;
-        seller.createdAt = DateTime.now();
-        seller.updatedAt = DateTime.now();
-        seller.uid = user.uid;
-        List<SellerModel> newSellers = List.from(state!)..add(seller);
-        state = newSellers;
-      });
+      DocumentReference docRef = await fireSellers.add(seller.toJson());
+      seller.id = docRef.id;
+      List<SellerModel> newSellers = List.from(state!)..add(seller);
+      state = newSellers;
+      return seller;
     } catch (error) {
-      print("Failed to add seller: $error");
+      throw Exception('Failed to create seller: $error');
     }
   }
 

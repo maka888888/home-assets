@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:home_assets3/constants/sizes.dart' as sizes;
 import 'package:home_assets3/models/asset_model.dart';
+import 'package:home_assets3/providers/seller_provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../providers/assets_provider.dart';
@@ -15,6 +16,7 @@ import '../../utils/photo_handling.dart';
 import '../catalog/categories/category_new.dart';
 import '../catalog/maintainers/maintainer_new.dart';
 import '../catalog/producers/producer_new.dart';
+import '../catalog/sellers/seller_new.dart';
 
 class AssetEditScreen extends ConsumerStatefulWidget {
   final AssetModel asset;
@@ -299,11 +301,8 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                                 ))
                             .toList(),
                         onChanged: (value) {
-                          _asset.categoryId = value!;
+                          _asset.categoryId = value.toString();
                         },
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                        ]),
                       ),
                       FormBuilderDropdown(
                         name: 'homeId',
@@ -319,7 +318,7 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                                 ))
                             .toList(),
                         onChanged: (value) {
-                          _asset.homeId = value!;
+                          _asset.homeId = value.toString();
                         },
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required(),
@@ -342,7 +341,19 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                                         builder: (context) =>
                                             const ProducerNewScreen(),
                                       ),
-                                    );
+                                    ).then((value) {
+                                      if (value != null) {
+                                        _formKey
+                                            .currentState!.fields['producerId']!
+                                            .reset();
+                                        _formKey
+                                            .currentState!.fields['producerId']!
+                                            .didChange(value);
+                                        setState(() {
+                                          _asset.producerId = value;
+                                        });
+                                      }
+                                    });
                                   },
                                   icon: const Icon(Icons.add),
                                 ),
@@ -395,6 +406,100 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                         },
                       ),
                       FormBuilderDropdown(
+                        name: 'sellerId',
+                        decoration: InputDecoration(
+                          labelText: 'Asset Seller',
+                          suffixIcon: SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SellerNewScreen(),
+                                      ),
+                                    ).then((value) {
+                                      if (value != null) {
+                                        _formKey
+                                            .currentState!.fields['sellerId']!
+                                            .reset();
+                                        _formKey
+                                            .currentState!.fields['sellerId']!
+                                            .didChange(value);
+                                        setState(() {
+                                          _asset.sellerId = value;
+                                        });
+                                      }
+                                    });
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    _formKey.currentState!.fields['sellerId']!
+                                        .reset();
+                                    _formKey.currentState!.fields['sellerId']!
+                                        .didChange(null);
+                                    setState(() {
+                                      _asset.producerId = null;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        initialValue: _asset.sellerId,
+                        items: ref
+                            .watch(sellersProvider)!
+                            .map((seller) => DropdownMenuItem(
+                                  value: seller.id,
+                                  child: Text(seller.sellerName),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _asset.sellerId = value.toString();
+                          });
+                        },
+                      ),
+                      FormBuilderDateTimePicker(
+                        name: 'purchaseDate',
+                        inputType: InputType.date,
+                        decoration: InputDecoration(
+                          labelText: 'Purchase Date',
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _asset.purchaseDate = null;
+                                _formKey.currentState!.fields['purchaseDate']!
+                                    .didChange(null);
+                              });
+                            },
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
+                        initialValue: _asset.purchaseDate,
+                        onChanged: (value) {
+                          _asset.purchaseDate = value!;
+                        },
+                      ),
+                      FormBuilderTextField(
+                        name: 'purchasePrice',
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'Purchase Price',
+                        ),
+                        onChanged: (value) {
+                          _asset.purchasePrice = double.parse(value!);
+                        },
+                      ),
+                      FormBuilderDropdown(
                         name: 'maintainerId',
                         decoration: InputDecoration(
                           labelText: 'Asset Maintainer',
@@ -411,7 +516,19 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                                         builder: (context) =>
                                             const MaintainerNewScreen(),
                                       ),
-                                    );
+                                    ).then((value) {
+                                      if (value != null) {
+                                        _formKey.currentState!
+                                            .fields['maintainerId']!
+                                            .reset();
+                                        _formKey.currentState!
+                                            .fields['maintainerId']!
+                                            .didChange(value);
+                                        setState(() {
+                                          _asset.maintainerId = value;
+                                        });
+                                      }
+                                    });
                                   },
                                   icon: const Icon(Icons.add),
                                 ),
@@ -446,60 +563,24 @@ class AssetEditScreenState extends ConsumerState<AssetEditScreen> {
                         },
                       ),
                       FormBuilderDateTimePicker(
-                        name: 'purchaseDate',
-                        decoration: InputDecoration(
-                          labelText: 'Purchase Date',
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _asset.purchaseDate = null;
-                                _formKey.currentState!.fields['purchaseDate']!
-                                    .didChange(null);
-                              });
-                            },
-                            icon: const Icon(Icons.close),
-                          ),
-                        ),
-                        initialValue: _asset.purchaseDate,
-                        onChanged: (value) {
-                          _asset.purchaseDate = value!;
-                        },
-                      ),
-                      FormBuilderTextField(
-                        name: 'purchasePrice',
-                        decoration: const InputDecoration(
-                          labelText: 'Purchase Price',
-                        ),
-                        initialValue: _asset.purchasePrice.toString(),
-                        onChanged: (value) {
-                          _asset.purchasePrice = double.parse(value!);
-                        },
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.numeric(),
-                        ]),
-                      ),
-                      FormBuilderDateTimePicker(
                         name: 'warrantyDueDate',
+                        inputType: InputType.date,
+                        initialValue: _asset.warrantyDueDate,
                         decoration: InputDecoration(
                           labelText: 'Warranty Due Date',
                           suffixIcon: IconButton(
                             onPressed: () {
+                              _formKey.currentState!.fields['warrantyDueDate']!
+                                  .didChange(null);
                               setState(() {
                                 _asset.warrantyDueDate = null;
-                                _formKey
-                                    .currentState!.fields['warrantyDueDate']!
-                                    .didChange(null);
                               });
                             },
                             icon: const Icon(Icons.close),
                           ),
                         ),
-                        initialValue: _asset.warrantyDueDate,
                         onChanged: (value) {
-                          _asset.warrantyDueDate = value!;
+                          _asset.warrantyDueDate = value;
                         },
                       ),
                       FormBuilderTextField(

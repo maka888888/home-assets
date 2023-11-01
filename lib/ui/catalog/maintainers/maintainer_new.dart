@@ -47,7 +47,7 @@ class MaintainerNewScreenState extends ConsumerState<MaintainerNewScreen> {
       setState(() {
         _isSaving = false;
       });
-      Navigator.pop(context);
+      Navigator.pop(context, value.id);
     });
   }
 

@@ -29,7 +29,6 @@ class EventModel {
 
   factory EventModel.fromFire(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    print(data['event']);
 
     return EventModel(
       id: document.id,

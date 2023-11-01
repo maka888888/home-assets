@@ -7,7 +7,9 @@ import 'package:home_assets3/models/asset_model.dart';
 import 'package:home_assets3/providers/homes_provider.dart';
 import 'package:home_assets3/providers/maintainers_provider.dart';
 import 'package:home_assets3/providers/producer_provider.dart';
+import 'package:home_assets3/providers/seller_provider.dart';
 import 'package:home_assets3/ui/catalog/maintainers/maintainer_new.dart';
+import 'package:home_assets3/ui/catalog/sellers/seller_new.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../providers/assets_provider.dart';
@@ -182,6 +184,8 @@ class AssetNewScreenState extends ConsumerState<AssetNewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sellers = ref.watch(sellersProvider)!;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Asset'),
@@ -296,7 +300,19 @@ class AssetNewScreenState extends ConsumerState<AssetNewScreen> {
                                         builder: (context) =>
                                             const ProducerNewScreen(),
                                       ),
-                                    );
+                                    ).then((value) {
+                                      if (value != null) {
+                                        _formKey
+                                            .currentState!.fields['producerId']!
+                                            .reset();
+                                        _formKey
+                                            .currentState!.fields['producerId']!
+                                            .didChange(value);
+                                        setState(() {
+                                          _asset.producerId = value;
+                                        });
+                                      }
+                                    });
                                   },
                                   icon: const Icon(Icons.add),
                                 ),
@@ -349,9 +365,9 @@ class AssetNewScreenState extends ConsumerState<AssetNewScreen> {
                         },
                       ),
                       FormBuilderDropdown(
-                        name: 'maintainerId',
+                        name: 'sellerId',
                         decoration: InputDecoration(
-                          labelText: 'Asset Maintainer',
+                          labelText: 'Asset Seller',
                           suffixIcon: SizedBox(
                             width: 100,
                             child: Row(
@@ -363,22 +379,32 @@ class AssetNewScreenState extends ConsumerState<AssetNewScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const MaintainerNewScreen(),
+                                            const SellerNewScreen(),
                                       ),
-                                    );
+                                    ).then((value) {
+                                      if (value != null) {
+                                        _formKey
+                                            .currentState!.fields['sellerId']!
+                                            .reset();
+                                        _formKey
+                                            .currentState!.fields['sellerId']!
+                                            .didChange(value);
+                                        setState(() {
+                                          _asset.sellerId = value;
+                                        });
+                                      }
+                                    });
                                   },
                                   icon: const Icon(Icons.add),
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    _formKey
-                                        .currentState!.fields['maintainerId']!
+                                    _formKey.currentState!.fields['sellerId']!
                                         .reset();
-                                    _formKey
-                                        .currentState!.fields['maintainerId']!
+                                    _formKey.currentState!.fields['sellerId']!
                                         .didChange(null);
                                     setState(() {
-                                      _asset.maintainerId = null;
+                                      _asset.producerId = null;
                                     });
                                   },
                                   icon: const Icon(Icons.close),
@@ -387,16 +413,17 @@ class AssetNewScreenState extends ConsumerState<AssetNewScreen> {
                             ),
                           ),
                         ),
-                        initialValue: _asset.maintainerId,
-                        items: ref
-                            .watch(maintainersProvider)!
-                            .map((maintainer) => DropdownMenuItem(
-                                  value: maintainer.id,
-                                  child: Text(maintainer.maintainerName),
+                        initialValue: _asset.sellerId,
+                        items: sellers
+                            .map((seller) => DropdownMenuItem(
+                                  value: seller.id,
+                                  child: Text(seller.sellerName),
                                 ))
                             .toList(),
                         onChanged: (value) {
-                          _asset.maintainerId = value.toString();
+                          setState(() {
+                            _asset.sellerId = value.toString();
+                          });
                         },
                       ),
                       FormBuilderDateTimePicker(
@@ -428,6 +455,69 @@ class AssetNewScreenState extends ConsumerState<AssetNewScreen> {
                         ),
                         onChanged: (value) {
                           _asset.purchasePrice = double.parse(value!);
+                        },
+                      ),
+                      FormBuilderDropdown(
+                        name: 'maintainerId',
+                        decoration: InputDecoration(
+                          labelText: 'Asset Maintainer',
+                          suffixIcon: SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MaintainerNewScreen(),
+                                      ),
+                                    ).then((value) {
+                                      if (value != null) {
+                                        _formKey.currentState!
+                                            .fields['maintainerId']!
+                                            .reset();
+                                        _formKey.currentState!
+                                            .fields['maintainerId']!
+                                            .didChange(value);
+                                        setState(() {
+                                          _asset.maintainerId = value;
+                                        });
+                                      }
+                                    });
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    _formKey
+                                        .currentState!.fields['maintainerId']!
+                                        .reset();
+                                    _formKey
+                                        .currentState!.fields['maintainerId']!
+                                        .didChange(null);
+                                    setState(() {
+                                      _asset.maintainerId = null;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        initialValue: _asset.maintainerId,
+                        items: ref
+                            .watch(maintainersProvider)!
+                            .map((maintainer) => DropdownMenuItem(
+                                  value: maintainer.id,
+                                  child: Text(maintainer.maintainerName),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          _asset.maintainerId = value.toString();
                         },
                       ),
                       FormBuilderDateTimePicker(

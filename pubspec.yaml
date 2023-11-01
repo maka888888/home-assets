@@ -2,7 +2,7 @@ name: home_assets3
 description: Home's Inventory, Simplified
 publish_to: 'none'
 
-version: 1.0.2+3
+version: 1.0.3+4
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
@@ -29,11 +29,12 @@ dependencies:
   photo_view: ^0.14.0
   google_fonts: ^6.1.0
   flutter_launcher_icons: ^0.13.1
+  firebase_analytics: ^10.6.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.0
   flutter_launcher_icons: "^0.13.1"
 
 

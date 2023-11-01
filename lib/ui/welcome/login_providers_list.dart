@@ -7,39 +7,37 @@ import '../loading/loading_main.dart';
 import 'email_login.dart';
 
 class LoginProvidersWidget extends StatelessWidget {
-  const LoginProvidersWidget({Key? key}) : super(key: key);
+  const LoginProvidersWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
-    String clientId =
-        '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
+    String clientId = '';
 
-    // if (isIOS) {
-    //   clientId =
-    //       '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
-    // } else {
-    //   clientId =
-    //       '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
-    // }
+    if (isIOS) {
+      clientId =
+          '454120191953-2mt5fcksbtpuh4u9g6qkr3ib7kclrkdi.apps.googleusercontent.com';
+    } else {
+      clientId =
+          '454120191953-be27j6rsg57tjalajbql6e2u3tgmse95.apps.googleusercontent.com';
+    }
 
     return AuthStateListener<OAuthController>(
       listener: (oldState, newState, controller) {
         //print('AuthStateListener: $oldState -> $newState');
         //print('AuthStateListener: $newState');
 
-        if (newState is AuthFailed) {
-          debugPrint(newState.exception.toString());
-        }
+        if (newState is AuthFailed) {}
         if (newState is SignedIn) {
           //print('Signed in as ${newState.user?.displayName}');
           //context.pushReplacement('/');
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
               builder: (context) => const LoadingScreen(),
             ),
+            (Route<dynamic> route) => false,
           );
         }
         return null;

@@ -41,7 +41,7 @@ class SellerNewScreenState extends ConsumerState<SellerNewScreen> {
       setState(() {
         _isSaving = false;
       });
-      Navigator.pop(context);
+      Navigator.pop(context, value.id);
     });
   }
 

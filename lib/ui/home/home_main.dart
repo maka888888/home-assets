@@ -92,6 +92,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       categoryId: ref.read(categoriesProvider)!.first.id,
       homeId: ref.read(homesProvider)!.first.id,
       images: [],
+      sellerId: null,
       purchaseDate: DateTime.now(),
       purchasePrice: 0,
       createdAt: DateTime.now(),
@@ -218,8 +219,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               icon: const Icon(Icons.settings_outlined),
             )
           ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(10),
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(10),
             child: Divider(
               indent: 100,
               thickness: 1,

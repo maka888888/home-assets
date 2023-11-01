@@ -30,6 +30,9 @@ class EventsProvider extends StateNotifier<List<EventModel>?> {
   }
 
   Future createEvent(EventModel event) async {
+    event.createdAt = DateTime.now();
+    event.updatedAt = DateTime.now();
+    event.uid = user.uid;
     try {
       await fireEvents.add(event.toJson()).then((value) {
         event.id = value.id;
@@ -37,16 +40,18 @@ class EventsProvider extends StateNotifier<List<EventModel>?> {
         state = newEvents;
       });
     } catch (error) {
-      print("Failed to add event: $error");
+      throw Exception("Failed to add event: $error");
     }
   }
 
   Future updateEvent(EventModel event) async {
+    event.updatedAt = DateTime.now();
+
     try {
       await fireEvents.doc(event.id).update(event.toJson());
       state = state!.map((e) => e.id == event.id ? event : e).toList();
     } catch (error) {
-      print("Failed to update event: $error");
+      throw Exception("Failed to update event: $error");
     }
   }
 

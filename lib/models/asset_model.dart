@@ -10,6 +10,7 @@ class AssetModel {
   String? serialNumber;
   String? maintainerId;
   List<String> images;
+  String? sellerId;
   DateTime? purchaseDate;
   double? purchasePrice;
   DateTime? warrantyDueDate;
@@ -28,6 +29,7 @@ class AssetModel {
     this.serialNumber,
     this.maintainerId,
     required this.images,
+    required this.sellerId,
     this.purchaseDate,
     this.purchasePrice,
     this.warrantyDueDate,
@@ -39,7 +41,6 @@ class AssetModel {
 
   factory AssetModel.fromFire(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    print(data['name']);
 
     return AssetModel(
       id: document.id,
@@ -53,6 +54,7 @@ class AssetModel {
       images: data['images'] == null
           ? []
           : List<String>.from(data['images'].map((x) => x)).toList(),
+      sellerId: data['sellerId'],
       purchaseDate: data['purchaseDate'] == null
           ? null
           : DateTime.parse(data['purchaseDate']),
@@ -81,6 +83,7 @@ class AssetModel {
       'maintainerId': maintainerId,
       'images': images,
       'purchaseDate': purchaseDate?.toIso8601String(),
+      'sellerId': sellerId,
       'purchasePrice': purchasePrice,
       'warrantyDueDate': warrantyDueDate?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
